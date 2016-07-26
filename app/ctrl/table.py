@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tornado.web
+import tornado.web
 import sys
 import json
 sys.path.append('..')
@@ -9,7 +9,11 @@ from model.ssfw import Ssfw
 class TableCtrl(tornado.web.RequestHandler):
 
   def get(self):
-    self.write('Not Finish!')
+    usr = self.get_argument('usr')
+    psw = self.get_argument('psw')
+    ssfw = Ssfw(usr, psw)
+    table = ssfw.get_table()
+    self.write(json.dumps(table))
 
   def post(self):
     self.write('Not Finish!')

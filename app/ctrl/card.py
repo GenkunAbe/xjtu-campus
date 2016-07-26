@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tornado.web
+import tornado.web
 import sys
 import json
 sys.path.append('..')

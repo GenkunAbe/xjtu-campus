@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tornado.web
+import tornado.web
 import sys
 import json
 sys.path.append('..')
@@ -9,7 +9,11 @@ from model.ssfw import Ssfw
 class GradeCtrl(tornado.web.RequestHandler):
 
   def get(self):
-    self.write('Not Finish!')
+    usr = self.get_argument('usr')
+    psw = self.get_argument('psw')
+    ssfw = Ssfw(usr, psw)
+    grades = ssfw.get_grades()
+    self.write(json.dumps(grades))
 
   def post(self):
     self.write('Not Finish!')
