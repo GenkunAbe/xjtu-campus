@@ -8,61 +8,46 @@ import cStringIO
 
 from PIL import Image, ImageEnhance
 from pytesseract import *
+from cas import Cas
 
 
-class XjtuCard:
+ua = {
+	'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+	'Accept-Encoding' : 'gzip, deflate, sdch, br',
+	'Accept-Language' : 'zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4',
+	'Connection' : 'keep-alive',
+	'DNT' : '1',
+	'Host' : 'card.xjtu.edu.cn',
+	'Upgrade-Insecure-Requests' : '1',
+	'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36'
+}
 
-	def __init__(self):
-		# URL for login
-		self.loginUrl = 'https://cas.xjtu.edu.cn/login?service=http://card.xjtu.edu.cn:8050/Account/CASSignIn'
-		# URL of grades
-		self.cardUrl = 'http://card.xjtu.edu.cn/CardManage/CardInfo/Transfer'
-		# URL of pay
-		self.payUrl = 'http://card.xjtu.edu.cn/CardManage/CardInfo/TransferAccount'
-		# URL of check code
-		self.codeUrl = 'http://card.xjtu.edu.cn/Account/GetCheckCodeImg?rad='
-		# URL of keyboard layout
-		self.keyboardUrl = 'http://card.xjtu.edu.cn/Account/GetNumKeyPadImg'
-		# Simulating Browser
-		self.headers = {
-			'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; InfoPath.3; rv:11.0) like Gecko'
+
+class Card:
+
+	def __init__(self, usr, psw):
+
+		self.urls = {
+			'basic_info' : 'http://card.xjtu.edu.cn/CardManage/CardInfo/BasicInfo',
+			# URL of main page
+			'card' : 'http://card.xjtu.edu.cn/CardManage/CardInfo/Transfer',
+			# URL to get check code
+			'code' : 'http://card.xjtu.edu.cn/Account/GetCheckCodeImg?rad=',
+			# URL to get keyboard layout
+			'keyboard' : 'http://card.xjtu.edu.cn/Account/GetNumKeyPadImg',
+			# URL to post requeset
+			'pay' : 'http://card.xjtu.edu.cn/CardManage/CardInfo/TransferAccount',
 		}
-		self.cookies = cookielib.CookieJar()
-		self.postdata = urllib.urlencode({})
 
-		# Generate opener
-		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookies))
+		self.cas = Cas(usr, psw)
+
 
 	# Get grades page
-	def get_page(self, lt, exe):
-
-		# Generate POST data
-		self.postdata = urllib.urlencode({
-			'username':'zdzhu',
-			'password':'zdzhu123456',
-			'lt':lt,
-			'execution':exe,
-			'_eventId':'submit',
-		})
-
-		# POST data
-		request  = urllib2.Request(
-			url = self.loginUrl,
-			data = self.postdata,
-			headers = self.headers)
-		result = self.opener.open(request)
-
+	def get_main_page(self):
 		# Get card page
-		result = self.opener.open(self.cardUrl)
+		result = self.cas.opener.open(self.urls['card'])
 		return result.read()
 
-	# get the keys for login
-	def get_keys(self):
-		result = self.opener.open(self.loginUrl)
-		html = result.read().decode('utf-8')
-		pattern = re.compile(r'type="hidden".+value="(.+?)"')
-		values = re.findall(pattern, html)
-		return values[0], values[1]
 
 	def pay(self, psw, check_code, amt):
 		self.postdata = urllib.urlencode({
@@ -75,9 +60,9 @@ class XjtuCard:
 			'bankpwd' : ''
 		})
 		request = urllib2.Request(
-			url = self.payUrl,
+			url = self.urls['pay'],
 			data = self.postdata,
-			headers = self.headers
+			headers = ua
 		)
 		result = self.opener.open(request)
 		return result.read()
@@ -86,12 +71,13 @@ class XjtuCard:
 	def get_code_pic(self, html):
 		pattern = re.compile(r'rad=(\d+)"')
 		rad = re.findall(pattern, html)[0]
-		result = self.opener.open(self.codeUrl + rad)
+		result = self.opener.open(self.urls['code'] + rad)
 		with open('1.gif', 'wb') as f:
 			f.write(result.read())
 
+
 	def get_encoded_psw(self, psw):
-		result = self.opener.open(self.keyboardUrl)
+		result = self.opener.open(self.urls['keyboard'])
 		stream = cStringIO.StringIO(result.read())
 		img = Image.open(stream)
 		img = ImageEnhance.Brightness(img).enhance(1.1)
@@ -99,7 +85,7 @@ class XjtuCard:
 		for j in range(10):
 			tmp = img.crop((6+j*30, 3, 19+j*30,28))
 			new_img.paste(tmp, (j*13,0))
-		ss = image_to_string(new_img, lang='num')
+		ss = image_to_string(new_img, lang = 'num')
 		ans = ''
 		for i in psw:
 			for j in range(len(ss)):
@@ -108,15 +94,29 @@ class XjtuCard:
 		return ans[::-1]
 
 
+	def get_card_info(self):
+		result = self.cas.opener.open(self.urls['basic_info'])
+		html = result.read()
+
+		pattern = re.compile(r'<em>(.+?)</em>', re.S)
+		data = re.findall(pattern, html)
+		info = {}
+		info['balance'] = data[4]
+		info['temp'] = data[5]
+		info['loss'] = data[6]
+		info['freeze'] = data[7]
+
+		return info
+
+
 if __name__ == '__main__':
-	xjtu = XjtuCard()
-	lt, exe = xjtu.get_keys()
-	html = xjtu.get_page(lt, exe)
-	xjtu.get_code_pic(html)
+	card = Card()
+	html = card.get_main_page()
+	card.get_code_pic(html)
 	raw_psw = str(input('Enter your password: '))
 	code = str(input('Enter check Code: '))
 	amt = input('Enter amount of money: ')
-	psw = xjtu.get_encoded_psw(raw_psw)
-	result = xjtu.pay(psw, code, '%.2f' % float(amt))
+	psw = card.get_encoded_psw(raw_psw)
+	result = card.pay(psw, code, '%.2f' % float(amt))
 	print result
 
