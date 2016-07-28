@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import re
 import urllib
 import urllib2
@@ -64,20 +65,20 @@ class Card:
 			data = self.postdata,
 			headers = ua
 		)
-		result = self.opener.open(request)
+		result = self.cas.opener.open(request)
 		return result.read()
 
 
 	def get_code_pic(self, html):
 		pattern = re.compile(r'rad=(\d+)"')
 		rad = re.findall(pattern, html)[0]
-		result = self.opener.open(self.urls['code'] + rad)
+		result = self.cas.opener.open(self.urls['code'] + rad)
 		with open('1.gif', 'wb') as f:
 			f.write(result.read())
 
 
 	def get_encoded_psw(self, psw):
-		result = self.opener.open(self.urls['keyboard'])
+		result = self.cas.opener.open(self.urls['keyboard'])
 		stream = cStringIO.StringIO(result.read())
 		img = Image.open(stream)
 		img = ImageEnhance.Brightness(img).enhance(1.1)
@@ -110,7 +111,9 @@ class Card:
 
 
 if __name__ == '__main__':
-	card = Card()
+	usr = sys.argv[1]
+	psw = sys.argv[2]
+	card = Card(usr, psw)
 	html = card.get_main_page()
 	card.get_code_pic(html)
 	raw_psw = str(input('Enter your password: '))

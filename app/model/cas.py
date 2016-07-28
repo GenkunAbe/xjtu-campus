@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import urllib
 import urllib2
 import cookielib
@@ -58,7 +59,9 @@ class Cas():
 
 
 if __name__ == '__main__':
-	cas = Cas('zdzhu', 'zdzhu123456')
+	usr = sys.argv[1]
+	psw = sys.argv[2]
+	cas = Cas(usr, psw)
 	if cas.link and len(cas.link) != 0:
 		result = cas.opener.open(cas.link[0])
 		print result.read()

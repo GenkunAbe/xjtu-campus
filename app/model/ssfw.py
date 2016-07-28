@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from cas import Cas
 import re
 import urllib2
@@ -115,7 +116,9 @@ class Ssfw:
 		pass
 
 if __name__ == '__main__':
-	ssfw = Ssfw('zdzhu', 'zdzhu123456')
+	usr = sys.argv[1]
+	psw = sys.argv[2]
+	ssfw = Ssfw(usr, psw)
 	# grades = ssfw.get_grades()
 	# for grade in grades:
 	#   print '\t'.join([str(i) for i in grade])
