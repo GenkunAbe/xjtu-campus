@@ -97,13 +97,16 @@ class Ssfw:
 		pattern = re.compile(r'</div>&nbsp;(.+?)\s*</td>')
 		divs = re.findall(pattern, html)
 		for div in divs:
-			infos = re.split(r'<br>|&nbsp;', div)
+			infos = re.split(r'<br>|&nbsp;|~|-', div)
 			if len(infos) > 6 and (len(infos) % 6 == 0):
 				for i in xrange(len(infos) / 6):
 					table.append(infos[6 * i : 6 * (i + 1)])
 			else:
 				table.append(infos)
-
+		for i in range(len(table)):
+			pattern = re.compile(r'[\d]+')
+			table[i][5] = re.findall(pattern, table[i][5])[0]
+			table[i][6] = re.findall(pattern, table[i][6])[0]						
 		return table
 
 
