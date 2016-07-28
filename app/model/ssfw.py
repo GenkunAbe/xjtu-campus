@@ -98,15 +98,30 @@ class Ssfw:
 		divs = re.findall(pattern, html)
 		for div in divs:
 			infos = re.split(r'<br>|&nbsp;|~|-', div)
-			if len(infos) > 6 and (len(infos) % 6 == 0):
-				for i in xrange(len(infos) / 6):
-					table.append(infos[6 * i : 6 * (i + 1)])
+			if len(infos) > 8 and (len(infos) % 8 == 0):
+				for i in xrange(len(infos) / 8):
+					table.append(infos[8 * i : 8 * (i + 1)])
 			else:
 				table.append(infos)
+
 		for i in range(len(table)):
+			pattern = re.compile(r'\((.+?)\)', re.S)
+			result = re.findall(pattern, table[i][3])
+			if len(result) == 1:
+				if result[0] == '\xe5\x8d\x95':
+					table[i].append('1')
+				else:
+					table[i].append('2')
+			else:
+				table[i].append('0')
+			
 			pattern = re.compile(r'[\d]+')
+			table[i][3] = re.findall(pattern, table[i][3])[0]
 			table[i][5] = re.findall(pattern, table[i][5])[0]
-			table[i][6] = re.findall(pattern, table[i][6])[0]						
+			table[i][6] = re.findall(pattern, table[i][6])[0]
+
+			table[i][7] = table[i][7][1:-1]			
+			
 		return table
 
 
@@ -128,6 +143,6 @@ if __name__ == '__main__':
 
 	table_list = ssfw.get_table_list()
 
-	table = ssfw.get_old_table(table_list['options'][3]['code'])
+	table = ssfw.get_old_table(table_list['options'][2]['code'])
 	for course in table:
 		print '\t\t\t'.join(course)
