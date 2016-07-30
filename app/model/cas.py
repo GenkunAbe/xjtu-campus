@@ -25,7 +25,7 @@ class Cas():
 		self.psw = psw
 
 		self.cookie = cookielib.MozillaCookieJar()
-		self.cookie.load(usr, ignore_discard=True, ignore_expires=True)
+		self.cookie.load(self.usr, ignore_discard=True, ignore_expires=True)
 		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
 
 		self.link = None
@@ -34,7 +34,7 @@ class Cas():
 			self.login()
 		if self.link and len(self.link) != 0:
 			result = self.opener.open(self.link[0])
-			self.cookie.save(usr, ignore_discard=True, ignore_expires=True)
+			self.cookie.save(self.usr, ignore_discard=True, ignore_expires=True)
 			print 'Login Success!'
 
 
