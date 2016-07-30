@@ -23,10 +23,38 @@ class Cas():
 	def __init__(self, usr, psw):
 		self.usr = usr
 		self.psw = psw
-		self.cookie = cookielib.CookieJar()
+
+		self.cookie = cookielib.MozillaCookieJar()
+		self.cookie.load(usr, ignore_discard=True, ignore_expires=True)
 		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
+
 		self.link = None
-		self.login()
+		result = self.old_cookie_login()
+		if not result:
+			self.login()
+		if self.link and len(self.link) != 0:
+			result = self.opener.open(self.link[0])
+			self.cookie.save(usr, ignore_discard=True, ignore_expires=True)
+			print 'Login Success!'
+
+
+	def is_success(self, html):
+		pattern = re.compile(r'<title>(.+?)</title>', re.S)
+		title = re.findall(pattern, html)
+		if len(title) == 1 and title[0] == '\xe7\xbb\x9f\xe4\xb8\x80\xe8\xba\xab\xe4\xbb\xbd\xe8\xae\xa4\xe8\xaf\x81\xe7\xbd\x91\xe5\x85\xb3':
+			return False
+		return True
+
+	def old_cookie_login(self):
+		result = self.opener.open(login_url)
+		html = result.read()
+		if self.is_success(html):
+			self.link = self.get_link(html)
+			print 'Old cookie vaild.'
+			return True
+		else:
+			print 'Old cookie invaild.'
+			return False
 
 	def login(self):
 		result = self.opener.open(login_url)
@@ -49,8 +77,13 @@ class Cas():
 
 		result = self.opener.open(request)
 		html = result.read()
+		self.link = self.get_link(html)
+
+
+	def get_link(self, html):
 		pattern = re.compile(r'url=(.+?)"/>', re.S)
-		self.link = re.findall(pattern, html)
+		return re.findall(pattern, html)
+
 
 	def get_keys(self, html):
 		pattern = re.compile(r'type="hidden".+value="(.+?)"')

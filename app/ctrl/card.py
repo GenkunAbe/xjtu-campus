@@ -6,7 +6,7 @@ import json
 sys.path.append('..')
 from model.card import Card
 
-class CardCtrl(tornado.web.RequestHandler):
+class CardInfoCtrl(tornado.web.RequestHandler):
 
   def get(self):
     usr = self.get_argument('usr')
@@ -14,6 +14,34 @@ class CardCtrl(tornado.web.RequestHandler):
     card = Card(usr, psw)
     info = card.get_card_info()
     self.write(json.dumps(info))
+
+  def post(self):
+    self.write('Not Finish!')
+
+class CardPreCtrl(tornado.web.RequestHandler):
+
+  def get(self):
+    usr = self.get_argument('usr')
+    psw = self.get_argument('psw')
+    card = Card(usr, psw)
+    pic = card.preprocess()
+    print 'Get pic sccess.'
+    self.write(pic.read())
+
+  def post(self):
+    self.write('Not Finish!')
+
+class CardPostCtrl(tornado.web.RequestHandler):
+
+  def get(self):
+    usr = self.get_argument('usr')
+    psw = self.get_argument('psw')
+    raw_psw = self.get_argument('rawpsw')
+    code = self.get_argument('code')
+    amt = self.get_argument('amt')
+    card = Card(usr, psw)
+    result = card.postprocess(raw_psw, code, amt)
+    self.write(result)
 
   def post(self):
     self.write('Not Finish!')

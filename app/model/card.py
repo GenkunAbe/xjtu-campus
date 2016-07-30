@@ -28,6 +28,9 @@ class Card:
 
 	def __init__(self, usr, psw):
 
+		self.usr = usr
+		self.psw = psw
+
 		self.urls = {
 			'basic_info' : 'http://card.xjtu.edu.cn/CardManage/CardInfo/BasicInfo',
 			# URL of main page
@@ -73,8 +76,8 @@ class Card:
 		pattern = re.compile(r'rad=(\d+)"')
 		rad = re.findall(pattern, html)[0]
 		result = self.cas.opener.open(self.urls['code'] + rad)
-		with open('1.gif', 'wb') as f:
-			f.write(result.read())
+
+		return result
 
 
 	def get_encoded_psw(self, psw):
@@ -110,16 +113,34 @@ class Card:
 		return info
 
 
+	def preprocess(self):
+		html = self.get_main_page()
+		pic = self.get_code_pic(html)
+		self.cas.cookie.save(self.usr, ignore_discard=True, ignore_expires=True)
+		return pic
+
+	def postprocess(self, raw_psw, code, amt):
+		self.cas.cookie.load(self.usr, ignore_discard=True, ignore_expires=True)
+		self.cas.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cas.cookie))
+		psw = self.get_encoded_psw(raw_psw)
+		result = self.pay(psw, code, '%.2f' % float(amt))
+		print result
+		return result
+
+
 if __name__ == '__main__':
 	usr = sys.argv[1]
 	psw = sys.argv[2]
+
 	card = Card(usr, psw)
-	html = card.get_main_page()
-	card.get_code_pic(html)
+	pic = card.preprocess()
+	with open('1.gif', 'wb') as f:
+			f.write(pic.read())
+
 	raw_psw = str(input('Enter your password: '))
 	code = str(input('Enter check Code: '))
 	amt = input('Enter amount of money: ')
-	psw = card.get_encoded_psw(raw_psw)
-	result = card.pay(psw, code, '%.2f' % float(amt))
+
+	result = card.postprocess(raw_psw, code, amt)
 	print result
 
