@@ -46,6 +46,36 @@ class Library:
 
 		return books
 
+	def get_book_detail(self, url):
+		uri = urls['main'] + url
+		result = self.opener.open(uri)
+		html = result.read()
+
+		pattern = re.compile(r'<td.+?class="briefCitRow">\s*(.+?)\s*</table>\s*</td>', re.S)
+		lines = re.findall(pattern, html)
+
+		detail = []
+		for line in lines:
+			pattern = re.compile(r'briefcitTitle">.+?href.+?">(.+?)</a>', re.S)
+			title = re.findall(pattern, line)[0]
+
+			pattern = re.compile(r'<br />\s*(.+?)<br />\s*(.+?)<br />', re.S)
+			author, press = re.findall(pattern, line)[0]
+
+			pattern = re.compile(r'<tr  class="bibItemsEntry">\s*(.+?)</tr>', re.S)
+			indexs = re.findall(pattern, line)
+
+			status = []
+			for index in indexs:
+				pattern = re.compile(r'&nbsp;(.+?)\s*</td>', re.S)
+				items = re.findall(pattern, index)
+
+				pattern = re.compile(r'>(.+?)</a>', re.S)
+				items[1] = re.findall(pattern, items[1])[0]
+				status.append(items)
+			detail.append([title, author, press, status])
+
+		return detail
 
 
 if __name__ == '__main__':
@@ -53,4 +83,11 @@ if __name__ == '__main__':
 	books = library.get_book_list('机器学习')
 
 	for book in books:
-		print book[0], book[1]
+		# print book[0], book[1]
+		detail = library.get_book_detail(book[0])
+		for d in detail:
+			print d[0]
+			print d[1], d[2]
+			for dd in d[3]:
+				print dd[0], dd[1], dd[2]
+			print '\n\n'
