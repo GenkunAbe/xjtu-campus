@@ -11,6 +11,7 @@ ua = {
 }
 
 urls = {
+	'main' : 'http://innopac.lib.xjtu.edu.cn',
 	'query_book' : 'http://innopac.lib.xjtu.edu.cn/search~S3*chx/?'
 }
 
