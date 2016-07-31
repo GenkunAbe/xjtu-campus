@@ -15,7 +15,6 @@ from ctrl.news import NewsCtrl
 url = [
     (r'/grade', GradeCtrl),
     (r'/table', TableCtrl),
-    (r'/library', LibraryCtrl),
 
     (r'/cardinfo', CardInfoCtrl),
     (r'/cardpre', CardPreCtrl),
