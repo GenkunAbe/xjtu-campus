@@ -49,6 +49,7 @@ class Library:
 
 	def get_book_detail(self, url, ff=None):
 		uri = urls['main'] + url + (('&FF=' + ff) if not ff == None else '')
+		uri = uri.replace(' ', '%20')
 		result = self.opener.open(uri)
 		html = result.read()
 
