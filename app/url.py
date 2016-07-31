@@ -20,7 +20,7 @@ url = [
     (r'/cardpre', CardPreCtrl),
     (r'/cardpost', CardPostCtrl),
 
-    (r'/booksearch', LibraryCtrl)
+    (r'/booksearch', LibraryCtrl),
 
     (r'/net', NetCtrl),
     (r'/news', NewsCtrl),
