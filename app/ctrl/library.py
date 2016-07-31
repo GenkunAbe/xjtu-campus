@@ -22,8 +22,9 @@ class BookDetailCrtl(tornado.web.RequestHandler):
 
   def get(self):
     link = self.get_argument('link')
+    ff = self.get_argument('FF')
     lib = Library()
-    detail = lib.get_book_detail(link)
+    detail = lib.get_book_detail(link, ff)
     self.write(json.dumps(detail))
 
   def post(self):

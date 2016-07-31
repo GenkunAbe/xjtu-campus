@@ -47,8 +47,8 @@ class Library:
 
 		return books
 
-	def get_book_detail(self, url):
-		uri = urls['main'] + url
+	def get_book_detail(self, url, ff):
+		uri = urls['main'] + url + '&FF=' + ff
 		result = self.opener.open(uri)
 		html = result.read()
 
