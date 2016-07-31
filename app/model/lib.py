@@ -21,6 +21,7 @@ class Library:
 		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
 
 	def get_book_list(self, arg, type='t'):
+		arg = arg.encode('utf8')
 		postdata = urllib.urlencode([
 			('searchtype', 't'),
 			('searcharg', arg)
