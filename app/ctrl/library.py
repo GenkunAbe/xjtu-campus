@@ -4,12 +4,16 @@ import tornado.web
 import sys
 import json
 sys.path.append('..')
-from model.ssfw import Ssfw
+from model.lib import Library
 
 class LibraryCtrl(tornado.web.RequestHandler):
 
   def get(self):
-    self.write('Not Finish!')
+    arg = self.get_argument('arg')
+    lib = Library()
+    books = lib.get_book_list(arg)
+    self.write(json.dumps(books))
+    
 
   def post(self):
     self.write('Not Finish!')

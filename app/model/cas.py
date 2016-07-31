@@ -5,6 +5,7 @@ import urllib
 import urllib2
 import cookielib
 import re
+import os
 
 login_url = 'https://cas.xjtu.edu.cn/login?service=http://ssfw.xjtu.edu.cn/index.portal'
 
@@ -24,7 +25,9 @@ class Cas():
 		self.usr = usr
 		self.psw = psw
 
-		self.cookie = cookielib.MozillaCookieJar()
+		self.cookie = cookielib.MozillaCookieJar(self.usr)
+		if not os.path.isfile(self.usr):
+			self.cookie.save(self.usr, ignore_discard=True, ignore_expires=True)
 		self.cookie.load(self.usr, ignore_discard=True, ignore_expires=True)
 		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
 
