@@ -4,12 +4,13 @@ import tornado.web
 import sys
 import json
 sys.path.append('..')
-from model.ssfw import Ssfw
+from model.news import News
 
 class NewsCtrl(tornado.web.RequestHandler):
 
   def get(self):
-    self.write('Not Finish!')
+    news = News()
+    self.write(json.dumps(news.ez_get()))
 
   def post(self):
     self.write('Not Finish!')
