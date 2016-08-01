@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from ctrl.auth import AuthCtrl
+
 from ctrl.grade import GradeCtrl
 from ctrl.table import TableCtrl
 from ctrl.library import BookSearchCtrl
@@ -13,6 +15,8 @@ from ctrl.net import NetCtrl
 from ctrl.news import NewsCtrl
 
 url = [
+    (r'/auth', AuthCtrl),
+
     (r'/grade', GradeCtrl),
     (r'/table', TableCtrl),
 
