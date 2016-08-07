@@ -66,16 +66,17 @@ class Library:
 		detail = []
 		if not len(lines) == 0:
 			for line in lines:
+				author = title = press = ''
 				pattern = re.compile(r'briefcitTitle">.+?href.+?">(.+?)</a>', re.S)
 				title = re.findall(pattern, line)[0]
 
-				pattern = re.compile(r'<br />\s*(.+?)<br />\s*(.+?)<br />', re.S)
+				pattern = re.compile(r'<br />\s*(.*?)<br />\s*(.*?)<br />', re.S)
 				author, press = re.findall(pattern, line)[0]
 
 				status = self.status_parser(line)
 				detail.append([title, author, press, status])
 		else:
-			author = title = press = None
+			author = title = press = ''
 			try:
 				pattern = re.compile(r'<!-- next row for fieldtag=a -->(.+?)<!-- next row for fieldtag=t -->(.+?)<!-- next row for fieldtag=p -->(.+?)<!-- END INNER BIB TABLE -->', re.S)
 				author, title, press = re.findall(pattern, html)[0]
@@ -108,29 +109,36 @@ class Library:
 
 		status = []
 		for index in indexs:
-			pattern = re.compile(r'&nbsp;(.+?)\s*</td>', re.S)
-			items = re.findall(pattern, index)
+			place = id = sta = ''
+			try:	
+				pattern = re.compile(r'&nbsp;(.*?)\s*</td>', re.S)
+				items = re.findall(pattern, index)
+				place, id, sta = items
 
-			pattern = re.compile(r'>(.+?)</a>', re.S)
-			items[1] = re.findall(pattern, items[1])[0]
-			status.append(items)
+				pattern = re.compile(r'>(.*?)</a>', re.S)
+				id = re.findall(pattern, id)[0]
+			except:
+				print place.decode('utf8'), id.decode('utf8'), sta.decode('utf8')
+				
+			status.append((place, id, sta))
 
 		return status
 
 
 if __name__ == '__main__':
 	library = Library()
-	books = library.get_book_list('人工智能'.decode('utf8'))
-	print books
-	exit()
+	# books = library.get_book_list('人工智能'.decode('utf8'))
+	# print books
+	# exit()
 
 	# detail = library.get_book_detail(books[1][0])
-	detail = library.get_book_detail('/search~S3*chx?/t{u673A}{u5668}{u5B66}{u4E60}/t{21455d}{213749}{213a60}{21524d}/1%2C46%2C56%2CB/frameset&FF=t{21455d}{213749}{213a60}{21524d}+{213b50}{215c6b}{213577}{214255}{21615a}{214d22}{213a60}{21524d}&1%2C1%2C')
+	detail = library.get_book_detail('/search~S3*chx?/t{u4EBA}{u5DE5}{u667A}{u80FD}/t{213064}{213c37}{21433d}{215348}/1%2C176%2C343%2CB/exact&FF=t{213064}{213c37}{21433d}{215348}&1%2C54%2C')
+	#exit()
 	for d in detail:
-		print d[0]
-		print d[1], d[2]
+		print d[0].decode('utf8')
+		print d[1].decode('utf8'), d[2].decode('utf8')
 		for dd in d[3]:
-			print dd[0], dd[1], dd[2]
+			print dd[0].decode('utf8'), dd[1].decode('utf8'), dd[2].decode('utf8')
 		print '\n\n'
 
 	exit()
