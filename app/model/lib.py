@@ -45,6 +45,13 @@ class Library:
 			if len(items) == 1:
 				books.append(items[0])
 
+		pattern = re.compile(r'<strong>1</strong>\s*(.+?)<!-- end page widgit -->', re.S)
+		tmp = re.findall(pattern, html)
+		if not len(tmp) == 0:
+			pattern = re.compile(r'"(.+?)"', re.S)
+			pages = re.findall(pattern, tmp[0])
+			books.append(pages)
+
 		return books
 
 	def get_book_detail(self, url, ff=None):
@@ -113,9 +120,11 @@ class Library:
 
 if __name__ == '__main__':
 	library = Library()
-	# books = library.get_book_list('机器学习'.decode('utf8'))
+	books = library.get_book_list('人工智能'.decode('utf8'))
+	print books
+	exit()
 
-	#detail = library.get_book_detail(books[1][0])
+	# detail = library.get_book_detail(books[1][0])
 	detail = library.get_book_detail('/search~S3*chx?/t{u673A}{u5668}{u5B66}{u4E60}/t{21455d}{213749}{213a60}{21524d}/1%2C46%2C56%2CB/frameset&FF=t{21455d}{213749}{213a60}{21524d}+{213b50}{215c6b}{213577}{214255}{21615a}{214d22}{213a60}{21524d}&1%2C1%2C')
 	for d in detail:
 		print d[0]
