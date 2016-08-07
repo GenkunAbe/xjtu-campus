@@ -68,12 +68,23 @@ class Library:
 				status = self.status_parser(line)
 				detail.append([title, author, press, status])
 		else:
-			pattern = re.compile(r'<!-- next row for fieldtag=a -->(.+?)<!-- next row for fieldtag=t -->(.+?)<!-- next row for fieldtag=p -->(.+?)<!-- END INNER BIB TABLE -->', re.S)
-			author, title, press = re.findall(pattern, html)[0]
+			author = title = press = None
+			try:
+				pattern = re.compile(r'<!-- next row for fieldtag=a -->(.+?)<!-- next row for fieldtag=t -->(.+?)<!-- next row for fieldtag=p -->(.+?)<!-- END INNER BIB TABLE -->', re.S)
+				author, title, press = re.findall(pattern, html)[0]
 
-			pattern = re.compile(r'href.+?">(.+?)</a>', re.S)
-			author = re.findall(pattern, author)[0]
-			press = re.findall(pattern, press)[0]
+				pattern = re.compile(r'href.+?">(.+?)</a>', re.S)
+				author = re.findall(pattern, author)[0]
+				press = re.findall(pattern, press)[0]
+			except:
+				pattern = re.compile(r'<!-- next row for fieldtag=t -->(.+?)<!-- next row for fieldtag=p -->(.+?)<!-- END INNER BIB TABLE -->', re.S)
+				title, press = re.findall(pattern, html)[0]
+				author = ''
+
+				pattern = re.compile(r'<td class="bibInfoData">\s*(.+?)</td></tr>', re.S)
+				press = re.findall(pattern, press)[0]
+
+			
 
 			pattern = re.compile(r'<strong>(.+?)</strong>', re.S)
 			title = re.findall(pattern, title)[0]
@@ -102,9 +113,10 @@ class Library:
 
 if __name__ == '__main__':
 	library = Library()
-	books = library.get_book_list('机器学习'.decode('utf8'))
+	# books = library.get_book_list('机器学习'.decode('utf8'))
 
-	detail = library.get_book_detail(books[1][0])
+	#detail = library.get_book_detail(books[1][0])
+	detail = library.get_book_detail('/search~S3*chx?/t{u673A}{u5668}{u5B66}{u4E60}/t{21455d}{213749}{213a60}{21524d}/1%2C46%2C56%2CB/frameset&FF=t{21455d}{213749}{213a60}{21524d}+{213b50}{215c6b}{213577}{214255}{21615a}{214d22}{213a60}{21524d}&1%2C1%2C')
 	for d in detail:
 		print d[0]
 		print d[1], d[2]
