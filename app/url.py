@@ -10,6 +10,7 @@ from ctrl.library import BookDetailCrtl
 from ctrl.card import CardInfoCtrl
 from ctrl.card import CardPreCtrl
 from ctrl.card import CardPostCtrl
+from ctrl.card import CardChangeCtrl
 
 from ctrl.net import NetCtrl
 from ctrl.news import NewsCtrl
@@ -23,6 +24,7 @@ url = [
     (r'/cardinfo', CardInfoCtrl),
     (r'/cardpre', CardPreCtrl),
     (r'/cardpost', CardPostCtrl),
+    (r'/cardchange', CardChangeCtrl),
 
     (r'/booksearch', BookSearchCtrl),
     (r'/bookdetail', BookDetailCrtl),

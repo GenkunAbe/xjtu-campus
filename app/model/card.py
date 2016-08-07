@@ -2,6 +2,7 @@
 
 import sys
 import re
+import time
 import urllib
 import urllib2
 import cookielib
@@ -35,8 +36,10 @@ class Card:
 			'basic_info' : 'http://card.xjtu.edu.cn/CardManage/CardInfo/BasicInfo',
 			# URL of main page
 			'card' : 'http://card.xjtu.edu.cn/CardManage/CardInfo/Transfer',
-			# URL to get check code
+			# URL to get captcha
 			'code' : 'http://card.xjtu.edu.cn/Account/GetCheckCodeImg?rad=',
+			# URL to change captcha
+			'change_code' : 'http://card.xjtu.edu.cn/Account/GetCheckCodeImg/Flag=',
 			# URL to get keyboard layout
 			'keyboard' : 'http://card.xjtu.edu.cn/Account/GetNumKeyPadImg',
 			# URL to post requeset
@@ -80,6 +83,13 @@ class Card:
 		return result
 
 
+	def change_code_pic(self):
+		self.cas.load_cookie()
+		now = str(int(time.time() * 1000))
+		result = self.cas.opener.open(self.urls['change_code'] + now)
+		return result
+
+
 	def get_encoded_psw(self, psw):
 		result = self.cas.opener.open(self.urls['keyboard'])
 		stream = cStringIO.StringIO(result.read())
@@ -116,15 +126,15 @@ class Card:
 	def preprocess(self):
 		html = self.get_main_page()
 		pic = self.get_code_pic(html)
-		self.cas.cookie.save(self.usr, ignore_discard=True, ignore_expires=True)
+		self.cas.save_cookie()
 		return pic
 
 	def postprocess(self, raw_psw, code, amt):
-		self.cas.cookie.load(self.usr, ignore_discard=True, ignore_expires=True)
+		self.cas.load_cookie()
 		self.cas.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cas.cookie))
 		psw = self.get_encoded_psw(raw_psw)
 		result = self.pay(psw, code, '%.2f' % float(amt))
-		print result
+		print self.usr, ' : ', amt, result
 		return result
 
 

@@ -57,6 +57,12 @@ class Cas():
 				f = open(self.user_dir + '/netid', 'w')
 				f.writelines([usr, '\n', psw])
 
+	def load_cookie(self):
+		self.cookie.load(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
+
+	def save_cookie(self):
+		self.cookie.save(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
+
 
 	def is_success(self, html):
 		pattern = re.compile(r'<title>(.+?)</title>', re.S)

@@ -25,7 +25,7 @@ class CardPreCtrl(tornado.web.RequestHandler):
     psw = self.get_argument('psw')
     card = Card(usr, psw)
     pic = card.preprocess()
-    print 'Get pic sccess.'
+    print 'Get pic success.'
     self.write(pic.read())
 
   def post(self):
@@ -42,6 +42,19 @@ class CardPostCtrl(tornado.web.RequestHandler):
     card = Card(usr, psw)
     result = card.postprocess(raw_psw, code, amt)
     self.write(result)
+
+  def post(self):
+    self.write('Not Finish!')
+
+class CardChangeCtrl(tornado.web.RequestHandler):
+
+  def get(self):
+    usr = self.get_argument('usr')
+    psw = self.get_argument('psw')
+    card = Card(usr, psw)
+    pic = card.change_code_pic()
+    print 'Change pic success.'
+    self.write(pic.read())
 
   def post(self):
     self.write('Not Finish!')
