@@ -25,10 +25,24 @@ class Cas():
 		self.usr = usr
 		self.psw = psw
 
-		self.cookie = cookielib.MozillaCookieJar(self.usr)
-		if not os.path.isfile(self.usr):
-			self.cookie.save(self.usr, ignore_discard=True, ignore_expires=True)
-		self.cookie.load(self.usr, ignore_discard=True, ignore_expires=True)
+		self.user_dir = "./data/" + usr
+		if not os.path.exists(self.user_dir):
+			os.mkdir(self.user_dir)
+		self.cookie_file_name = self.user_dir + "/cookie"
+
+		is_netid_same = False
+		try:
+			f = open(self.user_dir + '/netid', 'r')
+			lines = f.readlines()
+			is_netid_same = (usr == lines[0][0:-1] and psw == lines[1])
+		except:
+			print "NetId file not exits"
+
+		self.cookie = cookielib.MozillaCookieJar(self.cookie_file_name)
+		if not os.path.isfile(self.cookie_file_name) or not is_netid_same:
+			self.cookie.save(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
+		else:
+			self.cookie.load(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
 		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
 
 		self.link = None
@@ -37,8 +51,11 @@ class Cas():
 			self.login()
 		if self.link and len(self.link) != 0:
 			result = self.opener.open(self.link[0])
-			self.cookie.save(self.usr, ignore_discard=True, ignore_expires=True)
+			self.cookie.save(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
 			print 'Login Success!'
+			if not is_netid_same:
+				f = open(self.user_dir + '/netid', 'w')
+				f.writelines([usr, '\n', psw])
 
 
 	def is_success(self, html):
