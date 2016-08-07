@@ -42,7 +42,7 @@ class Library:
 		for line in lines:
 			pattern = re.compile(r'href="(.+?)">(.+?)</a>')
 			items = re.findall(pattern, line)
-			if len(items) == 1:
+			if len(items) == 1 and '&FF=' in items[0]:
 				books.append(items[0])
 
 		pattern = re.compile(r'<strong>1</strong>\s*(.+?)<!-- end page widgit -->', re.S)
