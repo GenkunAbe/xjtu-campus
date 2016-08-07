@@ -42,7 +42,7 @@ class Library:
 		for line in lines:
 			pattern = re.compile(r'href="(.+?)">(.+?)</a>')
 			items = re.findall(pattern, line)
-			if len(items) == 1 and '&FF=' in items[0]:
+			if len(items) == 1 and '&FF=' in items[0][0]:
 				books.append(items[0])
 
 		pattern = re.compile(r'<strong>1</strong>\s*(.+?)<!-- end page widgit -->', re.S)
@@ -127,9 +127,9 @@ class Library:
 
 if __name__ == '__main__':
 	library = Library()
-	# books = library.get_book_list('人工智能'.decode('utf8'))
-	# print books
-	# exit()
+	books = library.get_book_list('飘'.decode('utf8'))
+	print books
+	exit()
 
 	# detail = library.get_book_detail(books[1][0])
 	detail = library.get_book_detail('/search~S3*chx?/t{u4EBA}{u5DE5}{u667A}{u80FD}/t{213064}{213c37}{21433d}{215348}/1%2C176%2C343%2CB/exact&FF=t{213064}{213c37}{21433d}{215348}&1%2C54%2C')
