@@ -33,6 +33,9 @@ class Card:
 		self.psw = psw
 
 		self.urls = {
+			# URL of home page
+			'home' : 'http://card.xjtu.edu.cn/',
+			# URL of vasic information
 			'basic_info' : 'http://card.xjtu.edu.cn/CardManage/CardInfo/BasicInfo',
 			# URL of main page
 			'card' : 'http://card.xjtu.edu.cn/CardManage/CardInfo/Transfer',
@@ -109,16 +112,23 @@ class Card:
 
 
 	def get_card_info(self):
+		result = self.cas.opener.open(self.urls['home'])		
 		result = self.cas.opener.open(self.urls['basic_info'])
 		html = result.read()
 
-		pattern = re.compile(r'<em>(.+?)</em>', re.S)
-		data = re.findall(pattern, html)
 		info = {}
-		info['balance'] = data[4]
-		info['temp'] = data[5]
-		info['loss'] = data[6]
-		info['freeze'] = data[7]
+		try:
+			pattern = re.compile(r'<em>(.+?)</em>', re.S)
+			data = re.findall(pattern, html)
+			info['balance'] = data[4]
+			info['temp'] = data[5]
+			info['loss'] = data[6]
+			info['freeze'] = data[7]
+		except:
+			info['balance'] = '-1'
+			info['temp'] = '-1'
+			info['loss'] = '-1'
+			info['freeze'] = '-1'
 
 		return info
 
@@ -143,6 +153,10 @@ if __name__ == '__main__':
 	psw = sys.argv[2]
 
 	card = Card(usr, psw)
+
+	print card.get_card_info()
+	exit()
+
 	pic = card.preprocess()
 	with open('1.gif', 'wb') as f:
 			f.write(pic.read())
