@@ -55,6 +55,7 @@ class Card:
 	# Get grades page
 	def get_main_page(self):
 		# Get card page
+		result = self.cas.opener.open(self.urls['home'])
 		result = self.cas.opener.open(self.urls['card'])
 		return result.read()
 
@@ -89,11 +90,13 @@ class Card:
 	def change_code_pic(self):
 		self.cas.load_cookie()
 		now = str(int(time.time() * 1000))
+		result = self.cas.opener.open(self.urls['home'])
 		result = self.cas.opener.open(self.urls['change_code'] + now)
 		return result
 
 
 	def get_encoded_psw(self, psw):
+		result = self.cas.opener.open(self.urls['home'])
 		result = self.cas.opener.open(self.urls['keyboard'])
 		stream = cStringIO.StringIO(result.read())
 		img = Image.open(stream)
@@ -154,8 +157,8 @@ if __name__ == '__main__':
 
 	card = Card(usr, psw)
 
-	print card.get_card_info()
-	exit()
+	# print card.get_card_info()
+	# exit()
 
 	pic = card.preprocess()
 	with open('1.gif', 'wb') as f:
