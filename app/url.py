@@ -15,6 +15,8 @@ from ctrl.card import CardChangeCtrl
 from ctrl.net import NetCtrl
 from ctrl.news import NewsCtrl
 
+from ctrl.common_query import CommonQuery
+
 url = [
     (r'/auth', AuthCtrl),
 
@@ -31,4 +33,7 @@ url = [
 
     (r'/net', NetCtrl),
     (r'/news', NewsCtrl),
+
+    (r'/commqry', CommonQuery),
+    
 ]
