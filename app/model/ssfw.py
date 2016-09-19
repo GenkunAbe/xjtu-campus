@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
 from cas import Cas
 import re
 import urllib2
@@ -42,13 +43,20 @@ class Ssfw:
 			pass
 
 
-	def get_grades(self):
+	def get_grades(self, try_again = True):
 		grades = []
 		result = self.cas.opener.open(urls['grade'])
 		html = result.read()
 
 		pattern = re.compile(r'<tr class.+?</tr>', re.S)
 		lines = re.findall(pattern, html)
+
+		if len(lines) is 0 and try_again:
+			try:
+				os.remove('./data/' + self.usr + '/cookie')
+				return self.get_grades(try_again = False)
+			except:
+				return []
 
 		for line in lines:
 			pattern = re.compile(r'class="">\s*(.*?)\s*</td>', re.S)
@@ -137,9 +145,10 @@ if __name__ == '__main__':
 	usr = sys.argv[1]
 	psw = sys.argv[2]
 	ssfw = Ssfw(usr, psw)
-	# grades = ssfw.get_grades()
-	# for grade in grades:
-	#   print '\t'.join([str(i) for i in grade])
+	grades = ssfw.get_grades()
+	for grade in grades:
+	  print '\t'.join([str(i) for i in grade])
+	exit()
 
 	table_list = ssfw.get_table_list()
 
