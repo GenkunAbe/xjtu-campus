@@ -68,15 +68,22 @@ class CardPayCtrl(tornado.web.RequestHandler):
     pay_psw = self.get_argument('paypsw')
     amt = self.get_argument('amt')
     card = Card(usr, psw)
-    result = card.auto_pay(amt, psw)
-    ans = json.loads(result)
+    result = card.auto_pay(amt, pay_psw)
 
-    print('%s\t%15s Card Pay %4.2f %s' % (
-      time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
-      usr,
-      float(amt),
-      ans['success']
-    ))
+    try:
+      print('%s\t%15s\tCard Pay\t%4.2f\t%s' % (
+        time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
+        usr,
+        float(amt),
+        result.decode('utf8')
+      ))
+    except:
+      print('%s\t%15s\tCard Pay\t%4.2f\t%s' % (
+        time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
+        usr,
+        float(amt),
+        "False"
+      ))
 
     self.write(result)
 
