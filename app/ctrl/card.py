@@ -69,15 +69,16 @@ class CardPayCtrl(tornado.web.RequestHandler):
     amt = self.get_argument('amt')
     card = Card(usr, psw)
     result = card.auto_pay(amt, psw)
+    ans = json.loads(result)
 
     print('%s\t%15s Card Pay %4.2f %s' % (
       time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
       usr,
       float(amt),
-      result
+      ans['success']
     ))
 
-    self.write(pic.read())
+    self.write(result)
 
   def post(self):
     self.write('Not Finish!')
