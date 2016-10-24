@@ -21,10 +21,10 @@ class Library:
 		self.cookie = cookielib.CookieJar()
 		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
 
-	def get_book_list(self, arg, type='t'):
+	def get_book_list(self, arg, search_type='t'):
 		arg = arg.encode('utf8')
 		postdata = urllib.urlencode([
-			('searchtype', 't'),
+			('searchtype', search_type),
 			('searcharg', arg)
 		])
 		request = urllib2.Request(

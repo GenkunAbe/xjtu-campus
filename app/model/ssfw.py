@@ -22,12 +22,15 @@ ua = {
 
 
 urls = {
+	'home' : 'http://ssfw.xjtu.edu.cn/index.portal',
 	'grade' : 'http://ssfw.xjtu.edu.cn/index.portal?.pn=p1142_p1144_p1156',
 	'table' : 'http://ssfw.xjtu.edu.cn/index.portal?.pn=p1142_p1145_p1542',
 	'exam' : 'http://ssfw.xjtu.edu.cn/index.portal?.pn=p1142_p1147_p1158',
 	'mark' : 'http://ssfw.xjtu.edu.cn/index.portal?.pn=p1142_p1182_p1183',
 	'table_list' : 'http://ssfw.xjtu.edu.cn/pnull.portal?.pen=pe801&.pmn=view&action=optionsRetrieve&className=com.wiscom.app.w5ssfw.pkgl.domain.T_PKGL_PKSJSZ&namedQueryId=&displayFormat={xnxqDisplay}&useBaseFilter=true',
-	'table_post' : 'http://ssfw.xjtu.edu.cn/index.portal?.p=Znxjb20ud2lzY29tLnBvcnRhbC5zaXRlLmltcGwuRnJhZ21lbnRXaW5kb3d8ZjE4MjF8dmlld3xub3JtYWx8YWN0aW9uPXF1ZXJ5'
+	'table_post' : 'http://ssfw.xjtu.edu.cn/index.portal?.p=Znxjb20ud2lzY29tLnBvcnRhbC5zaXRlLmltcGwuRnJhZ21lbnRXaW5kb3d8ZjE4MjF8dmlld3xub3JtYWx8YWN0aW9uPXF1ZXJ5',
+	'teachers_list' : 'http://ssfw.xjtu.edu.cn/index.portal?.pn=p1142_p1182_p1183',
+	'teacher_post' : '',
 }
 
 
@@ -75,6 +78,26 @@ class Ssfw:
 
 		return grades
 
+	def auto_assess_teacher(self):
+		teachers_list = self.get_teachers_list()
+		for line in teachers_list:
+			self.assess_teacher(line[7])
+			exit()
+
+	def get_teachers_list(self):
+		html = self.cas.opener.open(urls['teachers_list']).read()
+		pattern = re.compile(r'<tr class.+?<td>\s*(.*?)\s*</td>\s*<td>\s*(.*?)\s*</td>\s*<td>\s*(.*?)&nbsp;\s*</td>\s*<td>\s*(.*?)\s*</td>\s*<td>\s*(.*?)\s*</td>\s*<td>\s*(.*?)\s*</td>\s*<td>\s*(.*?)\s*</td>\s*<td>\s*<a href="(.*?)">.+?</td></tr>', re.S)
+		result = re.findall(pattern, html)
+		return result
+	
+	def assess_teacher(self, url, auto=True, overview=None, rate=None, suggestion=None):
+		html = self.cas.opener.open(urls['home'] + url).read()
+		pattern = re.compile(r'<td style="vertical-align:middle">(.+?)</tr>', re.S)
+		lines = re.findall(pattern, html)
+		pattern = re.compile(r'<input.+?name="(.+?)".+?value="(.+?)".+?/>', re.S)
+		for line in lines:
+			items = re.findall(pattern, line)
+			print items
 
 	def get_table(self):
 		table = []
@@ -84,7 +107,7 @@ class Ssfw:
 		return self.table_parser(html)
 
 
-	def get_old_table(self, term = '20152'):
+	def get_priv_table(self, term = '20152'):
 		postdata = urllib.urlencode({
 			'newSearch' : 'true',
 			'xnxqdm' : term
@@ -145,6 +168,11 @@ if __name__ == '__main__':
 	usr = sys.argv[1]
 	psw = sys.argv[2]
 	ssfw = Ssfw(usr, psw)
+
+	ssfw.auto_assess_teacher()
+	exit()
+
+
 	grades = ssfw.get_grades()
 	for grade in grades:
 	  print '\t'.join([str(i) for i in grade])

@@ -7,6 +7,8 @@ import urllib
 import urllib2
 import cookielib
 import cStringIO
+import getpass
+import base64
 
 from PIL import Image, ImageEnhance
 from pytesseract import *
@@ -47,9 +49,32 @@ class Card:
 			'keyboard' : 'http://card.xjtu.edu.cn/Account/GetNumKeyPadImg',
 			# URL to post requeset
 			'pay' : 'http://card.xjtu.edu.cn/CardManage/CardInfo/TransferAccount',
+			# URL to Open Auto Pay Page
+			'auto_pay_page' : 'http://card.xjtu.edu.cn:8070/SynCard/Manage/Transfer',
+			# URL to Do Auto Pay
+			'auto_pay' : 'http://card.xjtu.edu.cn:8070/SynCard/Manage/TransferPost',
 		}
 
 		self.cas = Cas(usr, psw)
+
+	def auto_pay(self, amt, psw):
+		postdata = urllib.urlencode([
+				('FromCard', 'bcard'),
+				('ToCard', 'card'),
+				('Amount', amt),
+				('Password', psw)
+			])
+		request = urllib2.Request(
+			url = self.urls['auto_pay'],
+			data = postdata,
+			headers = ua
+		)
+		# result = self.cas.opener.open('http://card.xjtu.edu.cn:8070/')
+		self.cas.opener.open(self.urls['auto_pay_page'])
+		self.cas.opener.open(self.urls['auto_pay_page'])		
+		result = self.cas.opener.open(request)
+		return result.read()
+		
 
 
 	# Get grades page
@@ -156,6 +181,14 @@ if __name__ == '__main__':
 	psw = sys.argv[2]
 
 	card = Card(usr, psw)
+
+	amt = raw_input("AMT: ")
+	psw = raw_input("PSW: ")
+	psw = base64.b64encode(psw)
+	print psw
+	result = card.auto_pay(amt, psw)
+	print result
+	exit()
 
 	# print card.get_card_info()
 	# exit()
