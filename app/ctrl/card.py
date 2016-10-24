@@ -58,3 +58,25 @@ class CardChangeCtrl(tornado.web.RequestHandler):
 
   def post(self):
     self.write('Not Finish!')
+
+class CardPayCtrl(tornado.web.RequestHandler):
+
+  def get(self):
+    usr = self.get_argument('usr')
+    psw = self.get_argument('psw')
+    pay_psw = self.get_argument('paypsw')
+    amt = self.get_argument('amt')
+    card = Card(usr, psw)
+    result = card.auto_pay(amt, psw)
+
+    print('%s\t%15s Card Pay %4.2f %s' % (
+      time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
+      usr,
+      float(amt),
+      result
+    ))
+
+    self.write(pic.read())
+
+  def post(self):
+    self.write('Not Finish!')
