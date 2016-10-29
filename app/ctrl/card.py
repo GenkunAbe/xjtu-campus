@@ -82,7 +82,7 @@ class CardPayCtrl(tornado.web.RequestHandler):
         time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
         usr,
         float(amt),
-        "False"
+        "Other False"
       ))
 
     self.write(result)
