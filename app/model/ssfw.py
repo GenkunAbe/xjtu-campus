@@ -62,7 +62,7 @@ class Ssfw:
 				return []
 
 		for line in lines:
-			pattern = re.compile(r'class="">\s*(.*?)\s*</td>', re.S)
+			pattern = re.compile(r'class="[bjgcss]*">\s*(.*?)\s*</td>', re.S)
 			items = re.findall(pattern, line)
 
 			pattern = re.compile(r"'(.*?)'", re.S)
