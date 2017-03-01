@@ -38,12 +38,12 @@ class Cas():
 		except:
 			print("NetId file not exits")
 
-		self.cookie = cookielib.MozillaCookieJar(self.cookie_file_name)
+		self.cookie = http.cookiejar.MozillaCookieJar(self.cookie_file_name)
 		if not os.path.isfile(self.cookie_file_name) or not is_netid_same:
 			self.cookie.save(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
 		else:
 			self.cookie.load(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
-		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
+		self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self.cookie))
 
 		self.link = None
 		result = self.old_cookie_login()
@@ -95,7 +95,7 @@ class Cas():
 			'_eventId' : 'submit'
 		})
 
-		request = urllib2.Request(
+		request = urllib.request.Request(
 			url = login_url,
 			data = postdata,
 			headers = ua

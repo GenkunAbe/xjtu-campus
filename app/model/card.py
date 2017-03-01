@@ -6,7 +6,7 @@ import urllib
 import urllib.request
 import base64
 
-from cas import Cas
+from model.cas import Cas
 
 
 ua = {
@@ -58,7 +58,7 @@ class Card:
 				('Amount', amt),
 				('Password', psw)
 			])
-		request = urllib2.Request(
+		request = urllib.request.Request(
 			url = urls['auto_pay'],
 			data = postdata,
 			headers = ua

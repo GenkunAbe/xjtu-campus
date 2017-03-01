@@ -2,7 +2,7 @@
 
 import sys
 import os
-from cas import Cas
+from model.cas import Cas
 import re
 import urllib.request
 import urllib
@@ -112,7 +112,7 @@ class Ssfw:
 			'newSearch' : 'true',
 			'xnxqdm' : term
 		})
-		request = urllib2.Request(
+		request = urllib.request.Request(
 			url =  urls['table_post'],
 			data = postdata,
 			headers = ua

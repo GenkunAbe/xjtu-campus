@@ -18,8 +18,8 @@ urls = {
 class Library:
 
 	def __init__(self):
-		self.cookie = cookielib.CookieJar()
-		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
+		self.cookie = http.cookiejar.CookieJar()
+		self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self.cookie))
 
 	def get_book_list(self, arg, search_type='t'):
 		arg = arg.encode('utf8')
@@ -27,7 +27,7 @@ class Library:
 			('searchtype', search_type),
 			('searcharg', arg)
 		])
-		request = urllib2.Request(
+		request = urllib.request.Request(
 			url = urls['query_book'],
 			data = postdata,
 			headers=ua

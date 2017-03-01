@@ -4,7 +4,6 @@ import tornado.web
 import sys
 import json
 import time
-sys.path.append('..')
 from model.card import Card
 
 class CardInfoCtrl(tornado.web.RequestHandler):

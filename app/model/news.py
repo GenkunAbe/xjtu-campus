@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from cas import Cas
+from model.cas import Cas
 import re
 import urllib.request
 import urllib
@@ -15,8 +15,8 @@ urls = {
 class News:
 
   def __init__(self):
-    self.cookie = cookielib.CookieJar()
-    self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
+    self.cookie = http.cookiejar.CookieJar()
+    self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self.cookie))
 
   def get_list(self, url, index=1):
     uri = url % index

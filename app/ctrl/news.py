@@ -3,7 +3,6 @@
 import tornado.web
 import sys
 import json
-sys.path.append('..')
 from model.news import News
 
 class NewsCtrl(tornado.web.RequestHandler):

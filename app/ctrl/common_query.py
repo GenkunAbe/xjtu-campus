@@ -2,7 +2,6 @@
 
 import tornado.web
 import sys
-sys.path.append('..')
 from model.comm_qry import *
 
 class CommonQuery(tornado.web.RequestHandler):
