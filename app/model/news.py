@@ -6,6 +6,7 @@ import urllib.request
 import urllib
 import json
 import http.cookiejar
+import requests
 
 urls = {
   'xytz' : 'http://dean.xjtu.edu.cn/html/jxxx/xytz/%d.html',
@@ -15,12 +16,11 @@ urls = {
 class News:
 
   def __init__(self):
-    self.cookie = http.cookiejar.CookieJar()
-    self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self.cookie))
+    self.s = requests.Session()
 
   def get_list(self, url, index=1):
     uri = url % index
-    result = self.opener.open(uri)
+    result = self.s.get(uri)
     html = result.text
 
     pattern = re.compile(r'<a style="float:left; " href="(.+?)">(.+?)</a>.+?">(.+?)</span>', re.S)
