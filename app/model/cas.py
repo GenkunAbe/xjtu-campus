@@ -2,10 +2,12 @@
 
 import sys
 import urllib
-import urllib2
-import cookielib
+import urllib.request
+import http.cookiejar
 import re
 import os
+import pickle
+import requests
 
 login_url = 'https://cas.xjtu.edu.cn/login?service=http://ssfw.xjtu.edu.cn/index.portal'
 
@@ -36,73 +38,64 @@ class Cas():
 			lines = f.readlines()
 			is_netid_same = (usr == lines[0][0:-1] and psw == lines[1])
 		except:
-			print "NetId file not exits"
+			print("NetId file not exits")
 
-		self.cookie = cookielib.MozillaCookieJar(self.cookie_file_name)
+		self.s = requests.Session()
+
 		if not os.path.isfile(self.cookie_file_name) or not is_netid_same:
-			self.cookie.save(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
+			pickle.dump(self.s, open(self.cookie_file_name, 'wb'))
 		else:
-			self.cookie.load(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
-		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
+			self.s = pickle.load(open(self.cookie_file_name, 'rb'))
 
 		self.link = None
 		result = self.old_cookie_login()
 		if not result:
 			self.login()
 		if self.link and len(self.link) != 0:
-			result = self.opener.open(self.link[0])
-			self.cookie.save(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
-			print 'Login Success!'
+			result = self.s.get(self.link[0])			
+			pickle.dump(self.s, open(self.cookie_file_name, 'wb'))
+			print('Login Success!')
 			if not is_netid_same:
 				f = open(self.user_dir + '/netid', 'w')
 				f.writelines([usr, '\n', psw])
 
-	def load_cookie(self):
-		self.cookie.load(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
-
-	def save_cookie(self):
-		self.cookie.save(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
-
-
 	def is_success(self, html):
 		pattern = re.compile(r'<title>(.+?)</title>', re.S)
 		title = re.findall(pattern, html)
-		if len(title) == 1 and title[0] == '\xe7\xbb\x9f\xe4\xb8\x80\xe8\xba\xab\xe4\xbb\xbd\xe8\xae\xa4\xe8\xaf\x81\xe7\xbd\x91\xe5\x85\xb3':
+		if len(title) == 1 and title[0] == '统一身份认证网关':
 			return False
 		return True
 
 	def old_cookie_login(self):
-		result = self.opener.open(login_url)
-		html = result.read()
+		result = self.s.get(login_url)
+		html = result.text
 		if self.is_success(html):
 			self.link = self.get_link(html)
-			print 'Old cookie vaild.'
+			print('Old cookie vaild.')
 			return True
 		else:
-			print 'Old cookie invaild.'
+			print('Old cookie invaild.')
 			return False
 
 	def login(self):
-		result = self.opener.open(login_url)
-		html = result.read()
+		result = self.s.get(login_url)
+		html = result.text
 		lt, exe = self.get_keys(html)
 
-		postdata = urllib.urlencode({
+		postdata = {
 			'username' : self.usr,
 			'password' : self.psw,
 			'lt' : lt,
 			'execution' : exe,
 			'_eventId' : 'submit'
-		})
+		}
 
-		request = urllib2.Request(
-			url = login_url,
-			data = postdata,
+		result = self.s.post(
+			url = login_url, 
+			data = postdata, 
 			headers = ua
 		)
-
-		result = self.opener.open(request)
-		html = result.read()
+		html = result.text
 		self.link = self.get_link(html)
 
 
@@ -122,5 +115,5 @@ if __name__ == '__main__':
 	psw = sys.argv[2]
 	cas = Cas(usr, psw)
 	if cas.link and len(cas.link) != 0:
-		result = cas.opener.open(cas.link[0])
-		print result.read()
+		result = cas.s.get(cas.link[0])
+		print(result.text)

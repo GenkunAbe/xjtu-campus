@@ -3,7 +3,6 @@
 import tornado.web
 import sys
 import json
-sys.path.append('..')
 from model.ssfw import Ssfw
 
 class TableCtrl(tornado.web.RequestHandler):

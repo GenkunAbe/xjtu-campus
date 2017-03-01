@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from cas import Cas
+from model.cas import Cas
 import re
-import urllib2
+import urllib.request
 import urllib
 import json
-import cookielib
+import http.cookiejar
+import requests
 
 urls = {
   'xytz' : 'http://dean.xjtu.edu.cn/html/jxxx/xytz/%d.html',
@@ -15,13 +16,12 @@ urls = {
 class News:
 
   def __init__(self):
-    self.cookie = cookielib.CookieJar()
-    self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie))
+    self.s = requests.Session()
 
   def get_list(self, url, index=1):
     uri = url % index
-    result = self.opener.open(uri)
-    html = result.read()
+    result = self.s.get(uri)
+    html = result.text
 
     pattern = re.compile(r'<a style="float:left; " href="(.+?)">(.+?)</a>.+?">(.+?)</span>', re.S)
     lines = re.findall(pattern, html)
@@ -42,4 +42,4 @@ if __name__ == '__main__':
   news = News()
   lines = news.ez_get()
   for line in lines:
-    print line[0], line[1], line[2]
+    print(line[0], line[1], line[2])

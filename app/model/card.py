@@ -3,10 +3,10 @@
 import sys
 import re
 import urllib
-import urllib2
+import urllib.request
 import base64
 
-from cas import Cas
+from model.cas import Cas
 
 
 ua = {
@@ -52,28 +52,26 @@ class Card:
 		self.cas = Cas(usr, psw)
 
 	def auto_pay(self, amt, psw):
-		postdata = urllib.urlencode([
+		postdata = [
 				('FromCard', 'bcard'),
 				('ToCard', 'card'),
 				('Amount', amt),
 				('Password', psw)
-			])
-		request = urllib2.Request(
+		]
+		self.cas.s.get(urls['auto_pay_page'])
+		self.cas.s.get(urls['auto_pay_page'])		
+		result = self.cas.s.post(
 			url = urls['auto_pay'],
 			data = postdata,
 			headers = ua
 		)
-		# result = self.cas.opener.open('http://card.xjtu.edu.cn:8070/')
-		self.cas.opener.open(urls['auto_pay_page'])
-		self.cas.opener.open(urls['auto_pay_page'])		
-		result = self.cas.opener.open(request)
-		return result.read()
+		return result.text
 
 
 	def get_card_info(self):
-		result = self.cas.opener.open(urls['home'])		
-		result = self.cas.opener.open(urls['basic_info'])
-		html = result.read()
+		result = self.cas.s.get(urls['home'])		
+		result = self.cas.s.get(urls['basic_info'])
+		html = result.text
 
 		info = {}
 		try:
@@ -101,12 +99,12 @@ if __name__ == '__main__':
 	amt = raw_input("AMT: ")
 	psw = raw_input("PSW: ")
 	psw = base64.b64encode(psw)
-	print psw
+	print(psw)
 	result = card.auto_pay(amt, psw)
-	print result
+	print(result)
 	exit()
 
-	print card.get_card_info()
+	print(card.get_card_info())
 	exit()
 
 

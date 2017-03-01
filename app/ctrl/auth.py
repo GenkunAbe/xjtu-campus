@@ -3,7 +3,6 @@
 import tornado.web
 import sys
 import json
-sys.path.append('..')
 from model.cas import Cas
 
 class AuthCtrl(tornado.web.RequestHandler):
