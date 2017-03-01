@@ -118,7 +118,7 @@ class Library:
 				pattern = re.compile(r'>(.*?)</a>', re.S)
 				id = re.findall(pattern, id)[0]
 			except:
-				print place.decode('utf8'), id.decode('utf8'), sta.decode('utf8')
+				print(place.decode('utf8'), id.decode('utf8'), sta.decode('utf8'))
 				
 			status.append((place, id, sta))
 
@@ -128,27 +128,27 @@ class Library:
 if __name__ == '__main__':
 	library = Library()
 	books = library.get_book_list('飘'.decode('utf8'))
-	print books
+	print(books)
 	exit()
 
 	# detail = library.get_book_detail(books[1][0])
 	detail = library.get_book_detail('/search~S3*chx?/t{u4EBA}{u5DE5}{u667A}{u80FD}/t{213064}{213c37}{21433d}{215348}/1%2C176%2C343%2CB/exact&FF=t{213064}{213c37}{21433d}{215348}&1%2C54%2C')
 	#exit()
 	for d in detail:
-		print d[0].decode('utf8')
-		print d[1].decode('utf8'), d[2].decode('utf8')
+		print(d[0].decode('utf8'))
+		print(d[1].decode('utf8'), d[2].decode('utf8'))
 		for dd in d[3]:
-			print dd[0].decode('utf8'), dd[1].decode('utf8'), dd[2].decode('utf8')
-		print '\n\n'
+			print(dd[0].decode('utf8'), dd[1].decode('utf8'), dd[2].decode('utf8'))
+		print('\n\n')
 
 	exit()
 
 	for book in books:
-		print book[0], book[1]
+		print(book[0], book[1])
 		detail = library.get_book_detail(book[0])
 		for d in detail:
-			print d[0]
-			print d[1], d[2]
+			print(d[0])
+			print(d[1], d[2])
 			for dd in d[3]:
-				print dd[0], dd[1], dd[2]
-			print '\n\n'
+				print(dd[0], dd[1], dd[2])
+			print('\n\n')

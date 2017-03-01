@@ -42,4 +42,4 @@ if __name__ == '__main__':
   news = News()
   lines = news.ez_get()
   for line in lines:
-    print line[0], line[1], line[2]
+    print(line[0], line[1], line[2])

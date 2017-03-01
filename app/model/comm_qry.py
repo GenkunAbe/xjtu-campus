@@ -8,4 +8,4 @@ def get_now_week():
     return delta.days / 7 + 1
 
 if __name__ == '__main__':
-    print get_now_week()
+    print(get_now_week())

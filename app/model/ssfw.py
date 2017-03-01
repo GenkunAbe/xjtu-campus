@@ -97,7 +97,7 @@ class Ssfw:
 		pattern = re.compile(r'<input.+?name="(.+?)".+?value="(.+?)".+?/>', re.S)
 		for line in lines:
 			items = re.findall(pattern, line)
-			print items
+			print(items)
 
 	def get_table(self):
 		table = []
@@ -175,11 +175,11 @@ if __name__ == '__main__':
 
 	grades = ssfw.get_grades()
 	for grade in grades:
-	  print '\t'.join([str(i) for i in grade])
+	  print('\t'.join([str(i) for i in grade]))
 	exit()
 
 	table_list = ssfw.get_table_list()
 
 	table = ssfw.get_old_table(table_list['options'][2]['code'])
 	for course in table:
-		print '\t\t\t'.join(course)
+		print('\t\t\t'.join(course))

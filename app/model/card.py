@@ -101,12 +101,12 @@ if __name__ == '__main__':
 	amt = raw_input("AMT: ")
 	psw = raw_input("PSW: ")
 	psw = base64.b64encode(psw)
-	print psw
+	print(psw)
 	result = card.auto_pay(amt, psw)
-	print result
+	print(result)
 	exit()
 
-	print card.get_card_info()
+	print(card.get_card_info())
 	exit()
 
 
