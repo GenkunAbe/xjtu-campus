@@ -2,7 +2,7 @@
 
 import sys
 import urllib
-import urllib2
+import urllib.request
 import cookielib
 import re
 import os

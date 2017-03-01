@@ -2,7 +2,7 @@
 
 from cas import Cas
 import re
-import urllib2
+import urllib.request
 import urllib
 import json
 import cookielib

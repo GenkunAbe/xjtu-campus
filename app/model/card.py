@@ -3,7 +3,7 @@
 import sys
 import re
 import urllib
-import urllib2
+import urllib.request
 import base64
 
 from cas import Cas
