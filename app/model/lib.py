@@ -5,6 +5,7 @@ import urllib.request
 import http.cookiejar
 import re
 import json
+import requests
 
 ua = {
 	'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36'
@@ -18,21 +19,27 @@ urls = {
 class Library:
 
 	def __init__(self):
-		self.cookie = http.cookiejar.CookieJar()
-		self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self.cookie))
+		self.s = requests.Session()
+		# self.cookie = http.cookiejar.CookieJar()
+		# self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self.cookie))
 
 	def get_book_list(self, arg, search_type='t'):
 		arg = arg.encode('utf8')
-		postdata = urllib.urlencode([
+		postdata = [
 			('searchtype', search_type),
 			('searcharg', arg)
-		])
-		request = urllib.request.Request(
+		]
+		# request = urllib.request.Request(
+		# 	url = urls['query_book'],
+		# 	data = postdata,
+		# 	headers=ua
+		# )
+		result = self.s.post(
 			url = urls['query_book'],
 			data = postdata,
 			headers=ua
 		)
-		result = self.opener.open(request)
+		# result = self.opener.open(request)
 		html = result.text
 
 		pattern = re.compile(r'<tr.+?class="browseEntry">\s*(.+?)\s*</tr>', re.S)
@@ -57,7 +64,7 @@ class Library:
 	def get_book_detail(self, url, ff=None):
 		uri = urls['main'] + url + (('&FF=' + ff) if not ff == None else '')
 		uri = uri.replace(' ', '%20')
-		result = self.opener.open(uri)
+		result = self.s.get(uri)
 		html = result.text
 
 		pattern = re.compile(r'<td.+?class="briefCitRow">\s*(.+?)\s*</table>\s*</td>', re.S)
@@ -127,7 +134,7 @@ class Library:
 
 if __name__ == '__main__':
 	library = Library()
-	books = library.get_book_list('飘'.decode('utf8'))
+	books = library.get_book_list('飘')
 	print(books)
 	exit()
 
