@@ -5,7 +5,7 @@ import re
 import urllib.request
 import urllib
 import json
-import cookielib
+import http.cookiejar
 
 urls = {
   'xytz' : 'http://dean.xjtu.edu.cn/html/jxxx/xytz/%d.html',

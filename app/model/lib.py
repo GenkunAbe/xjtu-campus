@@ -2,7 +2,7 @@
 
 import urllib
 import urllib.request
-import cookielib
+import http.cookiejar
 import re
 import json
 
