@@ -52,21 +52,25 @@ class Card:
 		self.cas = Cas(usr, psw)
 
 	def auto_pay(self, amt, psw):
-		postdata = urllib.urlencode([
+		postdata = [
 				('FromCard', 'bcard'),
 				('ToCard', 'card'),
 				('Amount', amt),
 				('Password', psw)
-			])
-		request = urllib.request.Request(
+		]
+		# request = urllib.request.Request(
+		# 	url = urls['auto_pay'],
+		# 	data = postdata,
+		# 	headers = ua
+		# )
+		# result = self.cas.s.get('http://card.xjtu.edu.cn:8070/')
+		self.cas.s.get(urls['auto_pay_page'])
+		self.cas.s.get(urls['auto_pay_page'])		
+		result = self.cas.s.post(
 			url = urls['auto_pay'],
 			data = postdata,
 			headers = ua
 		)
-		# result = self.cas.s.get('http://card.xjtu.edu.cn:8070/')
-		self.cas.s.get(urls['auto_pay_page'])
-		self.cas.s.get(urls['auto_pay_page'])		
-		result = self.cas.s.get(request)
 		return result.text
 
 
