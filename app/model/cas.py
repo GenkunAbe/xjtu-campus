@@ -42,26 +42,17 @@ class Cas():
 
 		self.s = requests.Session()
 
-		# self.cookie = http.cookiejar.MozillaCookieJar(self.cookie_file_name)
 		if not os.path.isfile(self.cookie_file_name) or not is_netid_same:
 			pickle.dump(self.s, open(self.cookie_file_name, 'wb'))
-			# self.cookie.save(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
 		else:
-			# self.cookie.load(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
 			self.s = pickle.load(open(self.cookie_file_name, 'rb'))
-		# self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self.cookie))
 
 		self.link = None
 		result = self.old_cookie_login()
-		# print(result)
 		if not result:
-			# print('2')
 			self.login()
 		if self.link and len(self.link) != 0:
-			# print('ok')
-			# result = self.opener.open(self.link[0])
 			result = self.s.get(self.link[0])			
-			# self.cookie.save(self.cookie_file_name, ignore_discard=True, ignore_expires=True)
 			pickle.dump(self.s, open(self.cookie_file_name, 'wb'))
 			print('Login Success!')
 			if not is_netid_same:
@@ -78,7 +69,6 @@ class Cas():
 	def old_cookie_login(self):
 		result = self.s.get(login_url)
 		html = result.text
-		# print(html)
 		if self.is_success(html):
 			self.link = self.get_link(html)
 			print('Old cookie vaild.')
@@ -100,18 +90,11 @@ class Cas():
 			'_eventId' : 'submit'
 		}
 
-		# request = urllib.request.Request(
-		# 	url = login_url,
-		# 	data = postdata,
-		# 	headers = ua
-		# )
-
 		result = self.s.post(
 			url = login_url, 
 			data = postdata, 
 			headers = ua
 		)
-		# result = self.opener.open(request)
 		html = result.text
 		self.link = self.get_link(html)
 

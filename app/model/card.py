@@ -58,12 +58,6 @@ class Card:
 				('Amount', amt),
 				('Password', psw)
 		]
-		# request = urllib.request.Request(
-		# 	url = urls['auto_pay'],
-		# 	data = postdata,
-		# 	headers = ua
-		# )
-		# result = self.cas.s.get('http://card.xjtu.edu.cn:8070/')
 		self.cas.s.get(urls['auto_pay_page'])
 		self.cas.s.get(urls['auto_pay_page'])		
 		result = self.cas.s.post(

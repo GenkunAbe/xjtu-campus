@@ -20,8 +20,6 @@ class Library:
 
 	def __init__(self):
 		self.s = requests.Session()
-		# self.cookie = http.cookiejar.CookieJar()
-		# self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(self.cookie))
 
 	def get_book_list(self, arg, search_type='t'):
 		arg = arg.encode('utf8')
@@ -29,17 +27,11 @@ class Library:
 			('searchtype', search_type),
 			('searcharg', arg)
 		]
-		# request = urllib.request.Request(
-		# 	url = urls['query_book'],
-		# 	data = postdata,
-		# 	headers=ua
-		# )
 		result = self.s.post(
 			url = urls['query_book'],
 			data = postdata,
 			headers=ua
 		)
-		# result = self.opener.open(request)
 		html = result.text
 
 		pattern = re.compile(r'<tr.+?class="browseEntry">\s*(.+?)\s*</tr>', re.S)
