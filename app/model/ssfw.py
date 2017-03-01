@@ -40,7 +40,7 @@ class Ssfw:
 		self.psw = psw
 		self.cas = Cas(usr, psw)
 		if not len(self.cas.link) == 0:
-			self.cas.opener.open(self.cas.link[0])
+			self.cas.s.get(self.cas.link[0])
 		else:
 			# raise Error
 			pass
@@ -48,13 +48,13 @@ class Ssfw:
 
 	def get_grades(self, try_again = True):
 		grades = []
-		result = self.cas.opener.open(urls['grade'])
-		html = result.read()
+		result = self.cas.s.get(urls['grade'])
+		html = result.text
 
 		pattern = re.compile(r'<tr class.+?</tr>', re.S)
 		lines = re.findall(pattern, html)
 
-		if len(lines) is 0 and try_again:
+		if len(lines) == 0 and try_again:
 			try:
 				os.remove('./data/' + self.usr + '/cookie')
 				return self.get_grades(try_again = False)
@@ -70,7 +70,7 @@ class Ssfw:
 			if not len(marks) == 0:
 				items[5] = marks[1:8]
 			else:
-				tmp = ['' for i in xrange(7)]
+				tmp = ['' for i in range(7)]
 				tmp[0] = items[5]
 				items[5] = tmp
 
@@ -85,13 +85,13 @@ class Ssfw:
 			exit()
 
 	def get_teachers_list(self):
-		html = self.cas.opener.open(urls['teachers_list']).read()
+		html = self.cas.s.get(urls['teachers_list']).read()
 		pattern = re.compile(r'<tr class.+?<td>\s*(.*?)\s*</td>\s*<td>\s*(.*?)\s*</td>\s*<td>\s*(.*?)&nbsp;\s*</td>\s*<td>\s*(.*?)\s*</td>\s*<td>\s*(.*?)\s*</td>\s*<td>\s*(.*?)\s*</td>\s*<td>\s*(.*?)\s*</td>\s*<td>\s*<a href="(.*?)">.+?</td></tr>', re.S)
 		result = re.findall(pattern, html)
 		return result
 	
 	def assess_teacher(self, url, auto=True, overview=None, rate=None, suggestion=None):
-		html = self.cas.opener.open(urls['home'] + url).read()
+		html = self.cas.s.get(urls['home'] + url).read()
 		pattern = re.compile(r'<td style="vertical-align:middle">(.+?)</tr>', re.S)
 		lines = re.findall(pattern, html)
 		pattern = re.compile(r'<input.+?name="(.+?)".+?value="(.+?)".+?/>', re.S)
@@ -101,8 +101,8 @@ class Ssfw:
 
 	def get_table(self):
 		table = []
-		result = self.cas.opener.open(urls['table'])
-		html = result.read()
+		result = self.cas.s.get(urls['table'])
+		html = result.text
 
 		return self.table_parser(html)
 
@@ -117,8 +117,8 @@ class Ssfw:
 			data = postdata,
 			headers = ua
 		)
-		result = self.cas.opener.open(request)
-		html = result.read()
+		result = self.cas.s.get(request)
+		html = result.text
 
 		return self.table_parser(html)
 
@@ -130,7 +130,7 @@ class Ssfw:
 		for div in divs:
 			infos = re.split(r'<br>|&nbsp;|~|-', div)
 			if len(infos) > 8 and (len(infos) % 8 == 0):
-				for i in xrange(len(infos) / 8):
+				for i in range(len(infos) / 8):
 					table.append(infos[8 * i : 8 * (i + 1)])
 			else:
 				table.append(infos)
@@ -157,7 +157,7 @@ class Ssfw:
 
 
 	def get_table_list(self):
-		result = self.cas.opener.open(urls['table_list'])
+		result = self.cas.s.get(urls['table_list'])
 		return json.load(result)
 
 
