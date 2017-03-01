@@ -33,7 +33,7 @@ class Library:
 			headers=ua
 		)
 		result = self.opener.open(request)
-		html = result.read()
+		html = result.text
 
 		pattern = re.compile(r'<tr.+?class="browseEntry">\s*(.+?)\s*</tr>', re.S)
 		lines = re.findall(pattern, html)
@@ -58,7 +58,7 @@ class Library:
 		uri = urls['main'] + url + (('&FF=' + ff) if not ff == None else '')
 		uri = uri.replace(' ', '%20')
 		result = self.opener.open(uri)
-		html = result.read()
+		html = result.text
 
 		pattern = re.compile(r'<td.+?class="briefCitRow">\s*(.+?)\s*</table>\s*</td>', re.S)
 		lines = re.findall(pattern, html)

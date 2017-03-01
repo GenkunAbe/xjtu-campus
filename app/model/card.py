@@ -63,17 +63,17 @@ class Card:
 			data = postdata,
 			headers = ua
 		)
-		# result = self.cas.opener.open('http://card.xjtu.edu.cn:8070/')
-		self.cas.opener.open(urls['auto_pay_page'])
-		self.cas.opener.open(urls['auto_pay_page'])		
-		result = self.cas.opener.open(request)
-		return result.read()
+		# result = self.cas.s.get('http://card.xjtu.edu.cn:8070/')
+		self.cas.s.get(urls['auto_pay_page'])
+		self.cas.s.get(urls['auto_pay_page'])		
+		result = self.cas.s.get(request)
+		return result.text
 
 
 	def get_card_info(self):
-		result = self.cas.opener.open(urls['home'])		
-		result = self.cas.opener.open(urls['basic_info'])
-		html = result.read()
+		result = self.cas.s.get(urls['home'])		
+		result = self.cas.s.get(urls['basic_info'])
+		html = result.text
 
 		info = {}
 		try:

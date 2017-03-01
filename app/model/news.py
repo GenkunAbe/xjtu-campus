@@ -21,7 +21,7 @@ class News:
   def get_list(self, url, index=1):
     uri = url % index
     result = self.opener.open(uri)
-    html = result.read()
+    html = result.text
 
     pattern = re.compile(r'<a style="float:left; " href="(.+?)">(.+?)</a>.+?">(.+?)</span>', re.S)
     lines = re.findall(pattern, html)
