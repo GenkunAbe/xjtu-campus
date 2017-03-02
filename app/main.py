@@ -3,6 +3,7 @@
 import os
 import tornado.web
 import tornado.ioloop
+import tornado.httpserver
 from url import url
 
 app = tornado.web.Application(url)
@@ -13,5 +14,12 @@ def init():
 
 if __name__ == '__main__':
     init()
-    app.listen(12000)
+    server = tornado.httpserver.HTTPServer(
+        app, 
+        ssl_options = {
+            "certfile" : "server.crt",
+            "keyfile" : "server.key",
+        }
+    )
+    server.listen(12000)
     tornado.ioloop.IOLoop.instance().start()
