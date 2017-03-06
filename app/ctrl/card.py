@@ -74,7 +74,7 @@ class CardPayCtrl(tornado.web.RequestHandler):
         time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())),
         usr,
         float(amt),
-        result.decode('utf8')
+        result
       ))
     except:
       print('%s\t%15s\tCard Pay\t%4.2f\t%s' % (

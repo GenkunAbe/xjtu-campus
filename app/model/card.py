@@ -59,7 +59,7 @@ class Card:
 				('Password', psw)
 		]
 		self.cas.s.get(urls['auto_pay_page'])
-		self.cas.s.get(urls['auto_pay_page'])		
+		self.cas.s.get(urls['auto_pay_page'])
 		result = self.cas.s.post(
 			url = urls['auto_pay'],
 			data = postdata,
