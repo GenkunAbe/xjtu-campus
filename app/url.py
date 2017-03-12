@@ -8,10 +8,7 @@ from ctrl.library import BookSearchCtrl
 from ctrl.library import BookDetailCrtl
 
 from ctrl.card import CardInfoCtrl
-from ctrl.card import CardPreCtrl
-from ctrl.card import CardPostCtrl
-from ctrl.card import CardChangeCtrl
-
+from ctrl.card import CardPayTestCtrl
 from ctrl.card import CardPayCtrl
 
 from ctrl.net import NetCtrl
