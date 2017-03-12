@@ -9,8 +9,8 @@ import http.cookiejar
 import requests
 
 urls = {
-  'xytz' : 'http://dean.xjtu.edu.cn/html/jxxx/xytz/%d.html',
-  'zhtz' : 'http://dean.xjtu.edu.cn/html/jxxx/zhtz/%d.html',
+  'xytz' : 'http://dean.xjtu.edu.cn/jxxx/xytz.htm',
+  'zhtz' : 'http://dean.xjtu.edu.cn/jxxx/zhtz.htm',
 }
 
 class News:
@@ -19,17 +19,12 @@ class News:
     self.s = requests.Session()
 
   def get_list(self, url, index=1):
-    uri = url % index
+    uri = url
     result = self.s.get(uri)
     html = result.text
 
-    pattern = re.compile(r'<a style="float:left; " href="(.+?)">(.+?)</a>.+?">(.+?)</span>', re.S)
+    pattern = re.compile(r'style="float:left".+?href="(.+?)" target="_blank" title="(.+?)".*?>(.+?)</a>', re.S)
     lines = re.findall(pattern, html)
-
-    for i in range(len(lines)):
-      if lines[i][1].startswith('<span'):
-        pattern = re.compile(r'>(.+?)<', re.S)
-        lines[i] = (lines[i][0], re.findall(pattern, lines[i][1])[0], lines[i][2])
 
     return lines
 
