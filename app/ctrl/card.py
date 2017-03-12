@@ -18,43 +18,10 @@ class CardInfoCtrl(tornado.web.RequestHandler):
   def post(self):
     self.write('Not Finish!')
 
-class CardPreCtrl(tornado.web.RequestHandler):
+class CardPayTestCtrl(tornado.web.RequestHandler):
 
   def get(self):
-    usr = self.get_argument('usr')
-    psw = self.get_argument('psw')
-    card = Card(usr, psw)
-    pic = card.preprocess()
-    print('Get pic success.')
-    self.write(pic.read())
-
-  def post(self):
-    self.write('Not Finish!')
-
-class CardPostCtrl(tornado.web.RequestHandler):
-
-  def get(self):
-    usr = self.get_argument('usr')
-    psw = self.get_argument('psw')
-    raw_psw = self.get_argument('rawpsw')
-    code = self.get_argument('code')
-    amt = self.get_argument('amt')
-    card = Card(usr, psw)
-    result = card.postprocess(raw_psw, code, amt)
-    self.write(result)
-
-  def post(self):
-    self.write('Not Finish!')
-
-class CardChangeCtrl(tornado.web.RequestHandler):
-
-  def get(self):
-    usr = self.get_argument('usr')
-    psw = self.get_argument('psw')
-    card = Card(usr, psw)
-    pic = card.change_code_pic()
-    print('Change pic success.')
-    self.write(pic.read())
+    self.write('{"success":true,"msg":"交易成功\n\n欢迎下次使用","obj":null}')
 
   def post(self):
     self.write('Not Finish!')

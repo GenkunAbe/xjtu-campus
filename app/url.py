@@ -26,11 +26,8 @@ url = [
     (r'/table', TableCtrl),
 
     (r'/cardinfo', CardInfoCtrl),
-    (r'/cardpre', CardPreCtrl),
-    (r'/cardpost', CardPostCtrl),
-    (r'/cardchange', CardChangeCtrl),
-
-    (r'/cardpay', CardPayCtrl),    
+    (r'/cardpay', CardPayCtrl),
+    (r'/cardpaytest', CardPayTestCtrl), 
 
     (r'/booksearch', BookSearchCtrl),
     (r'/bookdetail', BookDetailCrtl),
