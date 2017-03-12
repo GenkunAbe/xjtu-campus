@@ -21,9 +21,10 @@ class News:
   def get_list(self, url, index=1):
     uri = url
     result = self.s.get(uri)
+    result.encoding = "utf-8"
     html = result.text
 
-    pattern = re.compile(r'style="float:left".+?href="(.+?)" target="_blank" title="(.+?)".*?>(.+?)</a>', re.S)
+    pattern = re.compile(r'list_time">(.+?)</span>.+?style="float:left".+?href="(.+?)" target="_blank" title="(.+?)".*?>', re.S)
     lines = re.findall(pattern, html)
 
     return lines
